@@ -8,6 +8,12 @@
 ## Repository Structure
 
 ```
+├── configs/            # Experiment configuration files
+│   ├── environment.yml
+│   ├── pca_config.yaml
+│   ├── lstm_ae_config.yaml
+│   └── training_config.yaml
+│
 ├── data/               # Raw and processed IndPenSim data
 │   ├── raw/            # Original dataset (read-only, do not modify)
 │   └── processed/      # Preprocessed data generated from the raw dataset
@@ -19,16 +25,17 @@
 │   ├── models.py       # Deep learning model architectures
 │   └── trainer.py      # Training and evaluation pipeline
 │
-├── experiments
+├── experiments/        # Experiment configurations and experiment-specific artifacts
 │   ├── exp01_pca
 │   └── exp02_fault_detection
 │
 ├── results/            # Saved models and visualization outputs
 │   ├── figures
-│   └── tables
+│   ├── tables
+│   ├── models
+│   └── logs
 │
 ├── README.md
-├── environment.yml
 └── .gitignore
 ```
 
