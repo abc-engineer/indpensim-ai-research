@@ -5,19 +5,31 @@
 ![Framework](https://img.shields.io/badge/framework-PyTorch%20/%20TensorFlow-orange.svg)
 
 
-
-
 ## Repository Structure
 
 ```
 ├── data/               # Raw and processed IndPenSim data
+│   ├── raw/            # Original dataset (read-only, do not modify)
+│   └── processed/      # Preprocessed data generated from the raw dataset
+│
 ├── notebooks/          # Exploratory analysis and experimental prototypes
+│
 ├── src/                # Core source code
 │   ├── preprocessing.py
 │   ├── models.py       # Deep learning model architectures
 │   └── trainer.py      # Training and evaluation pipeline
+│
+├── experiments
+│   ├── exp01_pca
+│   └── exp02_fault_detection
+│
 ├── results/            # Saved models and visualization outputs
-└── README.md
+│   ├── figures
+│   └── tables
+│
+├── README.md
+├── environment.yml
+└── .gitignore
 ```
 
 ---
@@ -51,21 +63,17 @@ This dataset is widely used as a **benchmark for bioprocess monitoring and fault
 ## Technology Stack
 
 **Language**
-
 * Python 3.x
 
 **Deep Learning**
-
 * PyTorch / TensorFlow
 
 **Data Analysis**
-
 * Pandas
 * NumPy
 * Scikit-learn
 
 **Visualization**
-
 * Matplotlib
 * Seaborn
 
@@ -74,6 +82,6 @@ This dataset is widely used as a **benchmark for bioprocess monitoring and fault
 
 ## Author
 
-Name:
-Affiliation:
-Contact:
+Name:  
+Affiliation:  
+Contact:  
