@@ -1,0 +1,13 @@
+variable,normal_mean,fault_mean,ttest_pvalue,mwu_pvalue,cohens_d,significance
+Oxygen Uptake Rate,1.2904,1.0131,0.0112,0.0003,-1.321,significant
+Substrate concentration,2.6339,15.1672,0.0215,0.0003,1.233,significant
+Offline Penicillin concentration,14.8263,10.5693,0.0195,0.0073,-1.168,significant
+Penicillin concentration,14.7011,10.666,0.0206,0.0084,-1.16,significant
+Temperature,298.0186,298.1004,0.0393,0.0018,1.118,significant
+Dissolved oxygen concentration,12.4926,13.2912,0.0081,0.0093,1.03,significant
+Vessel Volume,73551.2989,71488.788,0.023,0.0137,-1.0,significant
+Oxygen in percent in off-gas,0.1912,0.1931,0.0517,0.0035,0.943,not significant
+Aeration rate,65.3276,64.4974,0.1027,0.6032,-0.841,not significant
+carbon dioxide percent in off-gas,1.4556,1.3524,0.1373,0.0194,-0.71,not significant
+pH,6.4968,6.4892,0.546,0.0462,-0.249,not significant
+Agitator RPM,100.0,100.0,,1.0,0.0,not significant

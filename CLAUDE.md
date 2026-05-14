@@ -8,7 +8,6 @@
 
 - **목적**: 석사 논문 작성을 위한 연구 저장소
 - **주제**: IndPenSim(Industrial Penicillin Simulation) 데이터셋을 활용한 바이오제약 배치 공정 AI 연구
-- **확정 연구 주제**: 딥러닝 기반 이상 감지 (MSPC vs LSTM Autoencoder)
 - **언어**: Python
 
 ---
@@ -31,7 +30,22 @@
   - Fault 레이블: `Fault ref(0-NoFault 1-Fault)`
   - 라만 기록 여부: `2-PAT control(PAT_ref:PAT ref)`
 
-### EDA 결과 (2026-05-14 확인)
+### ⚠️ 배치 식별 주의사항 (2026-05-15 확인)
+
+`'Batch reference(Batch_ref:Batch ref)'` 컬럼은 **배치 번호가 아닌 이진 플래그(값 0 또는 1)**임.
+실제 배치(100개)는 `Time (h)` 컬럼이 감소(리셋)하는 지점으로 구분해야 함.
+
+```python
+# 올바른 배치 번호 생성 방법
+time_diff = df['Time (h)'].diff()
+reset_mask = time_diff.fillna(0) < 0   # True = 새 배치 시작
+batch_num  = reset_mask.cumsum() + 1   # 배치 번호 1~100
+df['batch_number'] = batch_num.astype(int)
+```
+
+Statistics CSV의 `Batch ref` (1~100, float)는 위 `batch_number`와 순서 기준으로 매핑.
+
+### EDA 결과 (2026-05-15 확인)
 
 | 항목 | 수치 |
 |------|------|
@@ -45,97 +59,67 @@
 
 ---
 
-## 현재 상태 (2026-05-14 기준)
+## 코딩 컨벤션
+
+- **그래프 텍스트** (제목, 축 레이블, 범례): **영어** (논문 제출 기준)
+- **print() 출력 및 코드 주석**: 한국어 유지
+- **결과물 저장 경로**:
+  - 그래프: `results/figures/`
+  - 분석 결과 CSV: `results/`
+  - 요약 보고서: `results/`
+  - 노트북: `notebooks/`
+  - 전처리/모델 함수: `src/`
+- **메모리 최적화**: 라만 채널은 `float32`, PAT/Fault는 `Int8` dtype 지정
+
+---
+
+## 서브 에이전트 구성 (`.claude/agents/`)
+
+| 파일 | 역할 |
+|------|------|
+| `data-analyst.md` | 데이터 탐색, 전처리, 통계 분석 |
+| `visualizer.md` | 논문용 그래프 생성 (dpi=300, 영문 레이블) |
+| `code-reviewer.md` | 코드 리뷰 |
+
+---
+
+## 현재 상태 (2026-05-15 기준)
 
 - [x] 데이터 파일 확보
 - [x] README.md 초안 작성
 - [x] REVIEW.md 작성
-- [x] `notebooks/00_overview.ipynb` EDA 코드 작성 및 실행 완료
-- [x] 연구 주제 확정: **주제 B — 딥러닝 기반 이상 감지**
 - [x] 폴더 구조 생성 (`src/`, `configs/`, `experiments/`, `results/`)
-- [x] `src/preprocessing.py` 작성 완료
-- [x] `src/models.py` 작성 완료 (LSTM Autoencoder)
-- [x] `src/trainer.py` 작성 완료
-- [x] `configs/fault_detection.yaml` 작성 완료
-- [x] `notebooks/01_fault_detection.ipynb` (Colab용) 작성 완료
-- [x] `notebooks/01_fault_detection_local.ipynb` (로컬용) 작성 완료
-- [ ] 실험 실행 및 결과 확인
-- [ ] 하이퍼파라미터 튜닝
-- [ ] Transformer-AE 비교 모델 추가
+- [x] `notebooks/00_overview.ipynb` EDA 코드 작성 및 실행 완료
+- [x] `.claude/agents/` 서브 에이전트 구성 (data-analyst, visualizer, code-reviewer)
+- [x] `notebooks/01_eda_statistical_analysis.ipynb` 작성 및 실행 완료
+  - 배치 식별 버그 수정 (Time 리셋 기반 배치 번호 생성)
+  - 그래프 레이블 영문화
+  - 9개 PNG 그래프 생성 (`results/figures/`)
+  - 4개 CSV 결과 파일 생성 (`results/`)
+- [ ] 연구 주제 확정
 
 ---
 
-## 프로젝트 파일 구조
+## 생성된 결과물
 
-```
-indpensim-ai-research/
-├── configs/
-│   └── fault_detection.yaml      # 하이퍼파라미터 설정
-├── data/
-│   └── raw/                      # CSV 데이터 (gitignore)
-├── notebooks/
-│   ├── 00_overview.ipynb         # EDA 노트북
-│   ├── 01_fault_detection.ipynb  # 실험 노트북 (Colab용)
-│   └── 01_fault_detection_local.ipynb  # 실험 노트북 (로컬용)
-├── src/
-│   ├── preprocessing.py          # 데이터 로드, 정규화, 윈도우 생성
-│   ├── models.py                 # LSTM Autoencoder
-│   └── trainer.py                # 학습, 평가, 이상 점수
-├── experiments/
-│   └── exp01_fault_detection/
-├── results/
-│   ├── figures/                  # 그래프 저장
-│   ├── models/                   # 모델 가중치 (.pth)
-│   └── logs/                     # 평가 결과 CSV
-├── CLAUDE.md
-├── REVIEW.md
-└── README.md
-```
+### 그래프 (`results/figures/`)
+| 파일 | 내용 |
+|------|------|
+| `01_batch_timesteps.png` | 배치별 타임스텝 수 분포 |
+| `01_missing_process_vars.png` | 공정 변수 결측률 |
+| `01_raman_coverage.png` | 라만 분광 기록 비율 (파이 차트) |
+| `01_boxplot_fault_vs_normal.png` | Fault vs Normal 박스플롯 |
+| `01_histogram_process_vars.png` | 공정 변수 분포 히스토그램 |
+| `01_normality_summary.png` | 정규성 검정 결과 + 왜도 |
+| `01_correlation_heatmap.png` | 피어슨 상관행렬 (Normal 배치) |
+| `01_correlation_fault_vs_normal.png` | Fault vs Normal 상관관계 비교 |
+| `01_cohens_d_effect_size.png` | Cohen's d 효과 크기 |
+| `01_yield_distribution.png` | 수율 분포 비교 |
 
----
-
-## 실험 설계 (Exp01)
-
-### 방법론
-| 구분 | 방법 | 비고 |
-|------|------|------|
-| 기준선 | MSPC (PCA 기반 SPE 통계량) | 전통적 통계 공정 관리 |
-| 제안 모델 | LSTM Autoencoder | 재구성 오차 = 이상 점수 |
-| 학습 전략 | Normal 배치만으로 학습 | 비지도 이상 감지 |
-| 평가 지표 | AUROC, AUPRC, ROC Curve | |
-
-### 사용 변수
-- 온라인 공정 변수 24개 (`src/preprocessing.py`의 `ONLINE_VARS`)
-- 오프라인 측정 변수(PAA_offline, NH3_offline, P_offline 등) 제외
-
-### 하이퍼파라미터 (`configs/fault_detection.yaml`)
-- window_size: 50, stride_train: 10, stride_eval: 1
-- hidden_dim: 64, latent_dim: 32, n_layers: 1
-- epochs: 50, batch_size: 64, lr: 0.001
-
----
-
-## 주요 버그 이력 및 해결
-
-| 문제 | 원인 | 해결 |
-|------|------|------|
-| `KeyError: 'Batch_ref'` | README 기반 잘못된 컬럼명 | 실제 컬럼명으로 수정, 상수 정의 |
-| `KeyError: 2` | 메인 CSV 배치 ID가 float, 통계 CSV는 int | `astype(float).astype(int)` + 교집합 처리 |
-| `ConnectionAbortedError` | Google Drive에서 2.4GB 직접 읽기 | Drive → 로컬 복사 후 읽기 / 로컬 전용 노트북 분리 |
-
----
-
-## 주요 주의 사항
-
-- **README 내용 무시**: README의 실험 계획은 미구현 상태였음. 현재는 `src/`, `configs/` 기준으로 관리
-- **Colab matplotlib 한글 미지원**: 그래프 제목·축 레이블은 영문, 마크다운·print문은 한글 사용
-- **배치 ID 타입**: 메인 CSV는 float, 통계 CSV는 int → 항상 `int`로 통일해서 사용
-- **대용량 파일**: Google Drive에서 직접 읽지 말고 로컬로 복사 후 사용
-
----
-
-## 다음 세션 우선 과제
-
-1. 실험 실행 결과 확인 (AUROC, AUPRC)
-2. 결과에 따라 하이퍼파라미터 튜닝
-3. Transformer-AE 비교 모델 구현 (`src/models.py` 추가)
+### CSV (`results/`)
+| 파일 | 내용 |
+|------|------|
+| `process_vars_descriptive_stats.csv` | 공정 변수 기초 통계량 |
+| `fault_vs_normal_test_results.csv` | Fault vs Normal 통계 검정 결과 |
+| `normality_test_results.csv` | 정규성 검정 결과 |
+| `high_correlation_pairs.csv` | 강한 상관 변수 쌍 (\|r\|≥0.8) |

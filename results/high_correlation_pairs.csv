@@ -1,0 +1,5 @@
+var_a,var_b,pearson_r,direction
+Penicillin concentration,Offline Penicillin concentration,1.0,positive
+Oxygen Uptake Rate,Oxygen in percent in off-gas,-0.9425,negative
+Vessel Volume,carbon dioxide percent in off-gas,0.8865,positive
+Aeration rate,carbon dioxide percent in off-gas,0.8078,positive

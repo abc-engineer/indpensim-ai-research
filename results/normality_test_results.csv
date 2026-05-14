@@ -1,0 +1,13 @@
+variable,shapiro_stat,p_value,normality,skewness,excess_kurtosis
+Aeration rate,0.3549,0.0,Non-normal,-4.212,17.617
+Agitator RPM,1.0,1.0,Normal,,
+Substrate concentration,0.5924,0.0,Non-normal,2.611,7.235
+Dissolved oxygen concentration,0.9538,0.0015,Non-normal,-0.915,3.139
+Penicillin concentration,0.9297,0.0,Non-normal,-0.925,1.421
+Vessel Volume,0.9361,0.0001,Non-normal,0.767,2.96
+pH,0.3545,0.0,Non-normal,-5.232,30.37
+Temperature,0.5536,0.0,Non-normal,4.081,18.748
+carbon dioxide percent in off-gas,0.8852,0.0,Non-normal,-1.625,5.161
+Oxygen Uptake Rate,0.8784,0.0,Non-normal,-1.522,3.465
+Oxygen in percent in off-gas,0.873,0.0,Non-normal,1.705,4.939
+Offline Penicillin concentration,0.9343,0.0001,Non-normal,-0.924,1.101

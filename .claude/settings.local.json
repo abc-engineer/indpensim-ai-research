@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Start-Process notepad \"C:\\\\abc-engineer\\\\indpensim-ai-research\\\\.claude\\\\agents\\\\data-analyst.md\")",
+      "Bash(jupyter nbconvert *)",
+      "PowerShell(jupyter *)",
+      "PowerShell(python -m pip install nbconvert nbformat nbclient ipykernel -q 2>&1 | Select-Object -Last 5)",
+      "PowerShell(python -m nbconvert --version 2>&1)",
+      "PowerShell(python -m pip install pandas numpy matplotlib seaborn scipy -q 2>&1 | Select-Object -Last 5)",
+      "PowerShell(python -c \"import pandas; print\\(pandas.__version__\\)\")",
+      "PowerShell(Get-ChildItem \"C:\\\\abc-engineer\\\\indpensim-ai-research\\\\results\" -Recurse | Where-Object {!$_.PSIsContainer} | Select-Object Name, LastWriteTime, @{N='KB';E={[math]::Round\\($_.Length/1KB,1\\)}})",
+      "Bash(git add *)"
+    ]
+  }
+}
