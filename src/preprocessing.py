@@ -46,11 +46,16 @@ def load_data(data_dir: str):
 
 
 def get_fault_labels(df_stats: pd.DataFrame) -> dict:
-    return df_stats.set_index(BATCH_COL_STATS)[FAULT_COL].to_dict()
+    return {int(k): int(v) for k, v in
+            df_stats.set_index(BATCH_COL_STATS)[FAULT_COL].to_dict().items()}
 
 
 def get_batch_sequences(df: pd.DataFrame, df_stats: pd.DataFrame, scaler=None):
     labels = get_fault_labels(df_stats)
+
+    # 메인 CSV의 배치 ID가 float으로 읽힐 수 있으므로 int로 통일
+    df = df.copy()
+    df[BATCH_COL] = df[BATCH_COL].astype(int)
     batch_ids = sorted(df[BATCH_COL].unique())
 
     sequences = {
