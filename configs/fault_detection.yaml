@@ -1,0 +1,18 @@
+data:
+  window_size: 50       # 슬라이딩 윈도우 크기 (타임스텝)
+  stride_train: 10      # 학습 시 윈도우 슬라이딩 간격
+  stride_eval: 1        # 평가 시 윈도우 슬라이딩 간격
+
+model:
+  hidden_dim: 64        # LSTM 히든 차원
+  latent_dim: 32        # 병목 잠재 벡터 차원
+  n_layers: 1           # LSTM 레이어 수
+
+training:
+  epochs: 50
+  batch_size: 64
+  lr: 0.001
+  device: cuda          # GPU 없으면 cpu로 변경
+
+evaluation:
+  threshold_percentile: 95   # Normal 배치 점수 기준 임계값 백분위수
