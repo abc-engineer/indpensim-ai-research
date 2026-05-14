@@ -75,13 +75,14 @@ def get_batch_sequences(df: pd.DataFrame, df_stats: pd.DataFrame, scaler=None):
 
 
 def train_test_split(sequences: dict, labels: dict):
-    normal_ids = sorted([bid for bid, lbl in labels.items() if lbl == 0])
-    all_ids    = sorted(labels.keys())
+    # sequences에 실제로 존재하는 배치 ID만 사용 (labels와 불일치 방지)
+    valid_ids  = sorted(sequences.keys())
+    normal_ids = [bid for bid in valid_ids if labels.get(bid, 1) == 0]
 
     X_train   = [sequences[bid] for bid in normal_ids]
-    X_test    = [sequences[bid] for bid in all_ids]
-    y_test    = [labels[bid]    for bid in all_ids]
-    batch_ids = all_ids
+    X_test    = [sequences[bid] for bid in valid_ids]
+    y_test    = [labels[bid]    for bid in valid_ids]
+    batch_ids = valid_ids
 
     return X_train, X_test, y_test, batch_ids
 
