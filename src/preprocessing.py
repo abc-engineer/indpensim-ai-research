@@ -53,10 +53,12 @@ def get_fault_labels(df_stats: pd.DataFrame) -> dict:
 def get_batch_sequences(df: pd.DataFrame, df_stats: pd.DataFrame, scaler=None):
     labels = get_fault_labels(df_stats)
 
-    # 메인 CSV의 배치 ID가 float으로 읽힐 수 있으므로 int로 통일
-    df = df.copy()
-    df[BATCH_COL] = df[BATCH_COL].astype(int)
-    batch_ids = sorted(df[BATCH_COL].unique())
+    # NaN 제거 후 float → int 변환 (1.0 → 1)
+    df = df.dropna(subset=[BATCH_COL]).copy()
+    df[BATCH_COL] = df[BATCH_COL].astype(float).astype(int)
+
+    # 두 파일에 공통으로 존재하는 배치 ID만 사용
+    batch_ids = sorted(set(df[BATCH_COL].unique()) & set(labels.keys()))
 
     sequences = {
         bid: df[df[BATCH_COL] == bid][ONLINE_VARS].values.astype(np.float32)
@@ -64,7 +66,7 @@ def get_batch_sequences(df: pd.DataFrame, df_stats: pd.DataFrame, scaler=None):
     }
 
     if scaler is None:
-        normal_ids  = [bid for bid, label in labels.items() if label == 0]
+        normal_ids  = [bid for bid in batch_ids if labels[bid] == 0]
         normal_data = np.vstack([sequences[bid] for bid in normal_ids])
         scaler = StandardScaler().fit(normal_data)
 
