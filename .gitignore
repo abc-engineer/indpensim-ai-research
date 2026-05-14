@@ -2,3 +2,4 @@ data/raw/*
 *.ipynb_checkpoints
 __pycache__
 .env
+claude.md
