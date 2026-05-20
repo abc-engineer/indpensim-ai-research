@@ -1,6 +1,6 @@
 variable,shapiro_stat,p_value,normality,skewness,excess_kurtosis
 Aeration rate,0.3549,0.0,Non-normal,-4.212,17.617
-Agitator RPM,1.0,1.0,Normal,,
+Agitator RPM,,,N/A (zero variance),,
 Substrate concentration,0.5924,0.0,Non-normal,2.611,7.235
 Dissolved oxygen concentration,0.9538,0.0015,Non-normal,-0.915,3.139
 Penicillin concentration,0.9297,0.0,Non-normal,-0.925,1.421
